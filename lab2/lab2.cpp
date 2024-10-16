@@ -10,126 +10,174 @@
 using namespace std;
 
 // Функция для задания 1
+int safeInputInt() {
+    int value;
+    while (!(cin >> value)) {
+        cin.clear();  // Сбрасываем флаг ошибки
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Очищаем ввод
+        cout << "Неверный ввод. Пожалуйста, введите целое число: ";
+    }
+    return value;
+}
+
+// Задание 1: Заполнение списка и вывод его элементов
 void task1() {
     int n;
-    cout << "Введите количество элементов: ";
-    cin >> n;
-
     list<int> L;
-    cout << "Введите " << n << " целых чисел:\n";
-    for (int i = 0; i < n; ++i) {
-        int x;
-        cin >> x;
-        L.push_back(x);
+
+    // Ввод количества элементов списка
+    cout << "Введите количество элементов списка L: ";
+    n = safeInputInt();
+
+    // Проверка на корректность ввода
+    if (n <= 0) {
+        cout << "Количество элементов списка должно быть больше 0!\n";
+        return;
     }
 
-    // Вывод в исходном порядке
-    cout << "Элементы списка L в исходном порядке: ";
-    for (int x : L) {
-        cout << x << " ";
+    // Ввод элементов списка L
+    cout << "Введите " << n << " целых чисел:\n";
+    for (int i = 0; i < n; ++i) {
+        int element = safeInputInt();
+        L.push_back(element);
+    }
+
+    // Вывод элементов в исходном порядке
+    cout << "Элементы списка в исходном порядке: ";
+    for (const int& el : L) {
+        cout << el << " ";
     }
     cout << endl;
 
-    // Вывод в обратном порядке
-    cout << "Элементы списка L в обратном порядке: ";
-    L.reverse();
-    for (int x : L) {
-        cout << x << " ";
+    // Вывод элементов в обратном порядке
+    cout << "Элементы списка в обратном порядке: ";
+    for (auto it = L.rbegin(); it != L.rend(); ++it) {
+        cout << *it << " ";
     }
     cout << endl;
 }
 
-// Функция для задания 2
+// Задание 2: Работа с вектором и деком
 void task2() {
     int n;
-    cout << "Введите количество элементов (четное число): ";
-    cin >> n;
 
-    if (n % 2 != 0) {
-        cout << "Ошибка: количество элементов должно быть четным!" << endl;
+    // Ввод четного числа элементов
+    cout << "Введите четное количество элементов для вектора и дека: ";
+    n = safeInputInt();
+
+    if (n <= 0 || n % 2 != 0) {
+        cout << "Количество элементов должно быть положительным и четным!\n";
+        return;
+    }
+
+    vector<int> V(n);  // Вектор V
+    deque<int> D(n);   // Дек D
+
+    // Ввод элементов для вектора
+    cout << "Введите " << n << " элементов для вектора:\n";
+    for (int i = 0; i < n; ++i) {
+        V[i] = safeInputInt();
+    }
+
+    // Ввод элементов для дека
+    cout << "Введите " << n << " элементов для дека:\n";
+    for (int i = 0; i < n; ++i) {
+        D[i] = safeInputInt();
+    }
+
+    // Сохраняем копию исходного вектора V для использования при изменении дека
+    vector<int> originalV(V);
+
+    // Добавляем в конец вектора первую половину дека (в исходном порядке)
+    V.insert(V.end(), D.begin(), D.begin() + n / 2);
+
+    // Добавляем в начало дека вторую половину исходного вектора (в обратном порядке)
+    D.insert(D.begin(), originalV.rbegin(), originalV.rbegin() + n / 2);
+
+    // Вывод результатов
+    cout << "Модифицированный вектор V: ";
+    for (const int& el : V) {
+        cout << el << " ";
+    }
+    cout << endl;
+
+    cout << "Модифицированный дек D: ";
+    for (const int& el : D) {
+        cout << el << " ";
+    }
+    cout << endl;
+}
+
+
+// Функция для задания 3
+void task3() {
+    int n;
+
+    // Ввод нечетного числа элементов
+    cout << "Введите нечетное количество элементов вектора (>= 5): ";
+    n = safeInputInt();
+
+    if (n < 5 || n % 2 == 0) {
+        cout << "Количество элементов должно быть нечетным и не меньше 5!\n";
         return;
     }
 
     vector<int> V(n);
-    deque<int> D(n);
 
-    cout << "Введите " << n << " элементов вектора V:\n";
+    // Ввод элементов вектора
+    cout << "Введите " << n << " элементов вектора:\n";
     for (int i = 0; i < n; ++i) {
-        cin >> V[i];
-    }
-
-    cout << "Введите " << n << " элементов дека D:\n";
-    for (int i = 0; i < n; ++i) {
-        cin >> D[i];
-    }
-
-    // Добавление первой половины элементов дека в конец вектора
-    V.insert(V.end(), D.begin(), D.begin() + n / 2);
-
-    // Добавление второй половины элементов вектора в начало дека в обратном порядке
-    D.insert(D.begin(), V.rbegin() + n / 2, V.rend());
-
-    // Вывод обновленного вектора
-    cout << "Обновленный вектор V: ";
-    for (int x : V) {
-        cout << x << " ";
-    }
-    cout << endl;
-
-    // Вывод обновленного дека
-    cout << "Обновленный дек D: ";
-    for (int x : D) {
-        cout << x << " ";
-    }
-    cout << endl;
-}
-
-// Функция для задания 3
-void task3() {
-    int N;
-    cout << "Введите количество элементов вектора (нечетное, >= 5): ";
-    cin >> N;
-
-    if (N < 5 || N % 2 == 0) {
-        cout << "Ошибка: количество элементов должно быть нечетным и >= 5!" << endl;
-        return;
-    }
-
-    vector<int> V(N);
-    cout << "Введите " << N << " элементов вектора V:\n";
-    for (int i = 0; i < N; ++i) {
-        cin >> V[i];
+        V[i] = safeInputInt();
     }
 
     // Удаление трех средних элементов
-    int mid = N / 2;
-    V.erase(V.begin() + mid - 1, V.begin() + mid + 2);
+    V.erase(V.begin() + n / 2 - 1, V.begin() + n / 2 + 2);
 
-    // Вывод обновленного вектора
-    cout << "Обновленный вектор V: ";
-    for (int x : V) {
-        cout << x << " ";
+    // Вывод вектора после удаления
+    cout << "Вектор после удаления трех средних элементов: ";
+    for (const int& el : V) {
+        cout << el << " ";
     }
     cout << endl;
 }
 
+double safeInputDouble() {
+    double value;
+    while (!(cin >> value)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Неверный ввод. Пожалуйста, введите число: ";
+    }
+    return value;
+}
 // Функция для задания 4: Арифметическая прогрессия
 void task4() {
     double A, D;
     int N;
-    cout << "Введите первый элемент (A), разность (D) и количество элементов (N): ";
-    cin >> A >> D >> N;
+
+    cout << "Введите первый элемент арифметической прогрессии (A): ";
+    A = safeInputDouble();
+
+    cout << "Введите разность арифметической прогрессии (D): ";
+    D = safeInputDouble();
+
+    cout << "Введите количество элементов прогрессии (N): ";
+    N = safeInputInt();
+
+    if (N <= 0) {
+        cout << "Количество элементов должно быть положительным!\n";
+        return;
+    }
 
     vector<double> progression(N);
 
-    // Используем generate_n для генерации элементов арифметической прогрессии
-    generate_n(progression.begin(), N, [=, n = 0]() mutable {
-        return A + n++ * D;
-        });
+    // Используем алгоритм generate_n для создания арифметической прогрессии
+    generate_n(progression.begin(), N, [A, D, i = 0]() mutable { return A + D * i++; });
 
+    // Вывод прогрессии
     cout << "Первые " << N << " членов арифметической прогрессии: ";
-    for (double x : progression) {
-        cout << x << " ";
+    for (const double& el : progression) {
+        cout << el << " ";
     }
     cout << endl;
 }
@@ -137,89 +185,83 @@ void task4() {
 // Функция для задания 5: Поиск "нулевого элемента" и вставка
 void task5() {
     int n;
-    cout << "Введите количество элементов (четное число): ";
-    cin >> n;
 
-    if (n % 2 != 0) {
-        cout << "Ошибка: количество элементов должно быть четным!" << endl;
+    // Ввод четного числа элементов
+    cout << "Введите четное количество элементов вектора: ";
+    n = safeInputInt();
+
+    if (n <= 0 || n % 2 != 0) {
+        cout << "Количество элементов должно быть положительным и четным!\n";
         return;
     }
 
     vector<int> V(n);
-    cout << "Введите " << n << " элементов вектора V:\n";
+
+    // Ввод элементов вектора
+    cout << "Введите " << n << " элементов вектора:\n";
     for (int i = 0; i < n; ++i) {
-        cin >> V[i];
+        V[i] = safeInputInt();
     }
 
-    // Поиск элемента в первой половине, который совпадает с элементом из второй половины
-    auto first_half_begin = V.begin();
-    auto first_half_end = first_half_begin + n / 2;
-    auto second_half_begin = first_half_end;
-    auto second_half_end = V.end();
+    // Поиск элемента первой половины, совпадающего с элементом второй половины
+    auto it = find_first_of(V.begin(), V.begin() + n / 2, V.begin() + n / 2, V.end());
 
-    auto it = find_first_of(first_half_begin, first_half_end, second_half_begin, second_half_end);
-
-    if (it != first_half_end) {
-        V.insert(it, *it); // Вставляем найденный элемент перед ним же
+    // Если элемент найден, вставляем его перед последним элементом первой половины
+    if (it != V.begin() + n / 2) {
+        V.insert(V.begin() + n / 2 - 1, *it);
+    }
+    else {
+        cout << "Совпадающий элемент не найден!\n";
     }
 
-    // Вывод обновленного вектора
-    cout << "Обновленный вектор V: ";
-    for (int x : V) {
-        cout << x << " ";
+    // Вывод результата
+    cout << "Вектор после модификации: ";
+    for (const int& el : V) {
+        cout << el << " ";
     }
     cout << endl;
 }
 
 // Функция для задания 6: Циклический сдвиг с использованием rotate_copy
 void task6() {
-    int K, n;
-    cout << "Введите число K (0 < K < 5): ";
-    cin >> K;
+    int k, n;
 
-    if (K <= 0 || K >= 5) {
-        cout << "Ошибка: K должно быть от 1 до 4!" << endl;
+    // Ввод количества элементов
+    cout << "Введите количество элементов списка L (>= 10): ";
+    n = safeInputInt();
+
+    if (n < 10) {
+        cout << "Количество элементов списка должно быть >= 10!\n";
         return;
     }
 
-    cout << "Введите количество элементов списка (не менее 10): ";
-    cin >> n;
+    // Ввод значения K
+    cout << "Введите значение K (0 < K < 5): ";
+    k = safeInputInt();
 
-    if (n < 10) {
-        cout << "Ошибка: должно быть минимум 10 элементов!" << endl;
+    if (k <= 0 || k >= 5) {
+        cout << "Значение K должно быть от 1 до 4!\n";
         return;
     }
 
     list<int> L;
-    cout << "Введите " << n << " элементов списка L:\n";
+    cout << "Введите " << n << " элементов списка:\n";
     for (int i = 0; i < n; ++i) {
-        int x;
-        cin >> x;
-        L.push_back(x);
+        L.push_back(safeInputInt());
     }
 
-    // Создание итераторов для 5 первых и 5 последних элементов
-    auto first_five_begin = L.begin();
-    auto first_five_end = next(first_five_begin, 5);
-    auto last_five_begin = prev(L.end(), 5);
-    auto last_five_end = L.end();
+    // Копируем первые 5 элементов и выполняем циклический сдвиг вправо
+    list<int> firstPart(L.begin(), next(L.begin(), 5));
+    rotate_copy(firstPart.begin(), next(firstPart.begin(), 5 - k), firstPart.end(), back_inserter(L));
 
-    // Место для сдвига на K позиций вправо (для первых 5 элементов)
-    list<int> shifted_right(5);
-    rotate_copy(first_five_begin, prev(first_five_end, K), first_five_end, shifted_right.begin());
+    // Копируем последние 5 элементов и выполняем циклический сдвиг влево
+    list<int> lastPart(prev(L.end(), 5), L.end());
+    rotate_copy(lastPart.begin(), next(lastPart.begin(), k), lastPart.end(), inserter(L, L.begin()));
 
-    // Место для сдвига на K позиций влево (для последних 5 элементов)
-    list<int> shifted_left(5);
-    rotate_copy(last_five_begin, next(last_five_begin, K), last_five_end, shifted_left.begin());
-
-    // Вставка полученных элементов в список
-    L.insert(L.end(), shifted_right.begin(), shifted_right.end()); // В конец
-    L.insert(L.begin(), shifted_left.begin(), shifted_left.end()); // В начало
-
-    // Вывод обновленного списка
-    cout << "Обновленный список L: ";
-    for (int x : L) {
-        cout << x << " ";
+    // Вывод результата
+    cout << "Модифицированный список: ";
+    for (const int& el : L) {
+        cout << el << " ";
     }
     cout << endl;
 }
@@ -227,45 +269,51 @@ void task6() {
 // Функция для задания 7: Вставка отсортированной половины вектора
 void task7() {
     int n;
-    cout << "Введите количество элементов вектора (четное число): ";
-    cin >> n;
 
-    if (n % 2 != 0) {
-        cout << "Ошибка: количество элементов должно быть четным!" << endl;
+    // Ввод четного числа элементов
+    cout << "Введите четное количество элементов вектора: ";
+    n = safeInputInt();
+
+    if (n <= 0 || n % 2 != 0) {
+        cout << "Количество элементов должно быть положительным и четным!\n";
         return;
     }
 
     vector<int> V(n);
-    cout << "Введите " << n << " элементов вектора V:\n";
+    vector<int> sortedHalf(n / 2);
+
+    // Ввод элементов вектора
+    cout << "Введите " << n << " элементов вектора:\n";
     for (int i = 0; i < n; ++i) {
-        cin >> V[i];
+        V[i] = safeInputInt();
     }
 
-    // Вектор для частичной сортировки
-    vector<int> sorted_half(n / 2);
-    partial_sort_copy(V.begin(), V.end(), sorted_half.begin(), sorted_half.end());
+    // Копируем первую половину отсортированного вектора в новый вектор
+    partial_sort_copy(V.begin(), V.end(), sortedHalf.begin(), sortedHalf.end());
 
-    // Вставка первой половины отсортированного вектора в конец
-    V.insert(V.end(), sorted_half.begin(), sorted_half.end());
+    // Вставляем элементы в конец исходного вектора
+    V.insert(V.end(), sortedHalf.begin(), sortedHalf.end());
 
-    // Вывод обновленного вектора
-    cout << "Обновленный вектор V: ";
-    for (int x : V) {
-        cout << x << " ";
+    // Вывод результата
+    cout << "Модифицированный вектор: ";
+    for (const int& el : V) {
+        cout << el << " ";
     }
     cout << endl;
 }
-void task8() {
-    list<string> L;
-    int n;
-    cout << "Введите количество слов в списке L: ";
-    cin >> n;
 
-    // Проверка корректности ввода
-    if (n < 2) {
-        cout << "Количество слов должно быть >= 2 для корректной работы!\n";
+void task8() {
+    int n;
+    cout << "Введите количество слов в списке: ";
+    n = safeInputInt();
+
+    if (n <= 1) {
+        cout << "Количество слов должно быть больше 1!\n";
         return;
     }
+
+    list<string> L;
+    deque<string> D;
 
     cout << "Введите " << n << " слов:\n";
     for (int i = 0; i < n; ++i) {
@@ -274,17 +322,21 @@ void task8() {
         L.push_back(word);
     }
 
-    deque<string> D;
+    // Создание строк, объединяющих первую букву левого слова и последнюю букву правого слова
+    auto it1 = L.begin();
+    auto it2 = next(L.begin());
 
-    // adjacent_difference требует начальный элемент, поэтому пропускаем первый результат
-    adjacent_difference(next(L.begin()), L.end(), inserter(D, D.begin()), [](const string& a, const string& b) {
-        return string(1, b.back()) + string(1, a.front());
-        });
+    while (it2 != L.end()) {
+        string combined = string(1, (*it1)[0]) + string(1, (*it2).back());
+        D.push_back(combined);
+        ++it1;
+        ++it2;
+    }
 
-    // Вывод дека
-    cout << "Элементы дека D: ";
-    for (const string& str : D) {
-        cout << str << " ";
+    // Вывод результата
+    cout << "Сформированный дек: ";
+    for (const string& el : D) {
+        cout << el << " ";
     }
     cout << endl;
 }
@@ -292,10 +344,10 @@ void task8() {
 void task9() {
     int N, size0;
     cout << "Введите количество векторов (N): ";
-    cin >> N;
+    N = safeInputInt();
 
     cout << "Введите размер вектора V0: ";
-    cin >> size0;
+    size0 = safeInputInt();
 
     if (N <= 0 || size0 <= 0) {
         cout << "Количество векторов и размер вектора V0 должны быть больше 0!\n";
@@ -305,14 +357,14 @@ void task9() {
     vector<int> V0(size0);
     cout << "Введите элементы вектора V0:\n";
     for (int i = 0; i < size0; ++i) {
-        cin >> V0[i];
+        V0[i] = safeInputInt();
     }
 
     int count = 0;
     for (int i = 1; i <= N; ++i) {
         int sizeI;
         cout << "Введите размер вектора V" << i << ": ";
-        cin >> sizeI;
+        sizeI = safeInputInt();
 
         if (sizeI < size0) {
             cout << "Размер вектора V" << i << " должен быть не меньше размера V0!\n";
@@ -322,7 +374,7 @@ void task9() {
         vector<int> Vi(sizeI);
         cout << "Введите элементы вектора V" << i << ":\n";
         for (int j = 0; j < sizeI; ++j) {
-            cin >> Vi[j];
+            Vi[j] = safeInputInt();
         }
 
         multiset<int> setV0(V0.begin(), V0.end()), setVi(Vi.begin(), Vi.end());
@@ -333,12 +385,11 @@ void task9() {
 
     cout << "Количество векторов, содержащих все элементы V0: " << count << endl;
 }
-
 // Задание 10: Группировка элементов вектора по последней цифре и multimap
 void task10() {
     int n;
     cout << "Введите количество элементов вектора V: ";
-    cin >> n;
+    n = safeInputInt();
 
     if (n <= 0) {
         cout << "Количество элементов должно быть положительным!\n";
@@ -348,7 +399,7 @@ void task10() {
     vector<int> V(n);
     cout << "Введите " << n << " элементов вектора V:\n";
     for (int i = 0; i < n; ++i) {
-        cin >> V[i];
+        V[i] = safeInputInt();
     }
 
     multimap<int, int> M;
@@ -365,7 +416,6 @@ void task10() {
         cout << "Ключ (последняя цифра): " << it->first << " -> Значение: " << it->second << endl;
     }
 }
-
 
 int main() {
     setlocale(LC_ALL, "RUSSIAN");
